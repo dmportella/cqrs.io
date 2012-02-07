@@ -1,0 +1,40 @@
+{
+  "name": "cqrs.io",
+  "preferGlobal": "false",
+  "version": "0.0.1",
+  "author": "dmportella <dan.portella@cohaesus.co.uk>",
+  "description": "A simple cqrs implementation",
+  "contributors": [ 
+    {
+      "name": "Daniel Portella",
+      "email": "dan.portella@cohaesus.co.uk"
+    } 
+  ],
+  "scripts": {
+    "start": "node ./start.js",
+    "test": "vows --spec --isolate"
+  },
+  "main": "./start.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com:dmportella/cqrs.io.git"
+  },
+  "keywords": [
+    "cqrs",
+    "simple",
+    "io"
+  ],
+  "dependencies" : {
+  },
+  "noAnalyze": true,
+  "devDependencies": {
+  },
+  "bundleDependencies": [
+  ],
+  "license": "MIT",
+  "engine": {
+    "node": ">=0.6"
+  }
+}
+
+        

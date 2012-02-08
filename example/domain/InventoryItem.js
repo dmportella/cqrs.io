@@ -1,54 +1,56 @@
-/** EXAMPLE OF CLASS STRUCTURE
- * Module dependencies.
- */
-var util = require('util')
-  , Strategy = require('../strategy');
+var AggregateRoot = require("../../lib/domain/aggregateroot"),
+    util = require("util");
 
+var InventoryItem  = function(id, name) {
+    AggregateRoot.call(this);
+    this.ApplyChange(new InventoryItemCreated(id, name));
+};
 
-/**
- * `SessionStrategy` constructor.
- *
- * @api protected
- */
-function SessionStrategy() {
-  Strategy.call(this);
-  this.name = 'session';
-}
+util.inherits(InventoryItem, AggregateRoot);
 
-/**
- * Inherit from `Strategy`.
- */
-util.inherits(SessionStrategy, Strategy);
+InventoryItem.prototype.Apply = function(event) {
+    if(event instanceof InventoryItemCreated)
+    {
+        this.id = event.id;
+        this.activated = true;
+    } else if (event instanceof InventoryItemDeactivated) {
+        this.activated = false;
+    } 
+    /* no need to do anything with this events
+    else if (event instanceof InventoryItemRenamed) {
+    } else if (event instanceof ItemsCheckedInToInventory) {
+    } else if (event instanceof ItemsRemovedFromInventory) {
+    }*/
+};
 
-/**
- * Authenticate request based on the current session state.
- *
- * The session authentication strategy uses the session to restore any login
- * state across requests.  If a login session has been established, `req.user`
- * will be populated with the current user.
- *
- * This strategy is registered automatically by Passport.
- *
- * @param {Object} req
- * @api protected
- */
-SessionStrategy.prototype.authenticate = function(req) {
-  if (!req._passport) { return this.error(new Error('passport.initialize() middleware not in use')); }
+InventoryItem.prototype.ChangeName = function(newName) {
+    if(!event.newName || 0 === event.newName.length)
+    {
+        throw new Error("Argument Exception newName.");
+    }
+    this.ApplyChange(new InventoryItemRenamed(this.id, newName));
+};
+
+InventoryItem.prototype.Remove = function(count) {
+    if (count <= 0) {
+        throw new Error("InvalidOperationException cant remove negative count from inventory.");
+    }
+    this.ApplyChange(new ItemsRemovedFromInventory(id, count));
+};
+
+InventoryItem.prototype.CheckIn = function(count) {
+    if (count <= 0) {
+        throw new Error("must have a count greater than 0 to add to inventory.");
+    }
+    this.ApplyChange(new ItemsCheckedInToInventory(id, count));
+};
+
+InventoryItem.prototype.Deactivate = function() {
+    if(!activated) {
+        throw new Error("InvalidOperationException already deactivated.");
+    }
+    this.ApplyChange(new InventoryItemDeactivated(id));
+};
+
+module.exports = InventoryItem;
   
-  var self = this;
-  if (req._passport.session.user) {
-    req._passport.instance.deserializeUser(req._passport.session.user, function(err, user) {
-      if (err) { return self.error(err); }
-      var property = req._passport.instance._userProperty || 'user';
-      req[property] = user;
-      self.pass();
-    });
-  } else {
-    self.pass();
-  }
-}
-
-/**
- * Expose `SessionStrategy`.
- */ 
-module.exports = SessionStrategy;

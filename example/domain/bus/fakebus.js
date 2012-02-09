@@ -2,7 +2,7 @@ var EventPublisher = require("../../lib/domain/eventpublisher"),
     CommandSender = require("../../lib/domain/commandsender"),
     util = require("util");
 
-var FakeBus  = function(inventoryItemId, count, originalVersion) {
+var FakeBus  = function() {
     EventPublisher.call(this);
     CommandSender.call(this);
     this.handlers = [];

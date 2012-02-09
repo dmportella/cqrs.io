@@ -1,18 +1,61 @@
+var EventPublisher = require("../../lib/domain/eventpublisher"),
+    CommandSender = require("../../lib/domain/commandsender"),
+    util = require("util");
+
+var FakeBus  = function(inventoryItemId, count, originalVersion) {
+    EventPublisher.call(this);
+    CommandSender.call(this);
+    this.handlers = [];
+};
+
+FakeBus.prototype.RegisterHandler = function(type, handler) {
+    if(type in this.handlers)
+    {
+        if(handler in this.handlers[type]) {
+            throw new Error("Handler is already registered.");
+        }
+        else
+        {
+            this.handlers[type].push(handler);
+        }
+    } else {
+        this.handlers[type] = [];
+        this.handlers[type].push(handler);
+    }
+};
+
+FakeBus.prototype.Send = function(command) {
+    if(command in this.handlers)
+    {
+        for(commandHandler in this.handlers[command])
+        {
+            commandHandler.handle(command);
+        }
+    } else {
+        throw new Error("InvalidOperationException no handler registered.");
+    }
+};
+
+FakeBus.prototype.Publish = function(event) {
+    if(event in this.handlers)
+    {
+        for(eventHandler in this.handlers[event])
+        {
+            eventHandler.handle(event);
+        }
+    } else {
+        throw new Error("InvalidOperationException no handler registered.");
+    }
+};
+
+util.inherits(FakeBus, EventPublisher);
+util.inherits(FakeBus, CommandSender);
+
+module.exports = FakeBus;
+
 /*public class FakeBus : ICommandSender, IEventPublisher
     {
-        private readonly Dictionary<Type, List<Action<Message>>> _routes = new Dictionary<Type, List<Action<Message>>>();
-
-        public void RegisterHandler<T>(Action<T> handler) where T : Message
-        {
-            List<Action<Message>> handlers;
-            if(!_routes.TryGetValue(typeof(T), out handlers))
-            {
-                handlers = new List<Action<Message>>();
-                _routes.Add(typeof(T), handlers);
-            }
-            handlers.Add(DelegateAdjuster.CastArgument<Message, T>(x => handler(x)));
-        }
-
+        
         public void Send<T>(T command) where T : Command
         {
             List<Action<Message>> handlers; 

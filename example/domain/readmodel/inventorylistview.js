@@ -1,18 +1,37 @@
-/*public class InventoryListView : Handles<InventoryItemCreated>, Handles<InventoryItemRenamed>, Handles<InventoryItemDeactivated>
+var Handler = require("../../../lib/domain/handler"),
+    util = require("util"),
+    FakeDatabase = require("./fakedatabase");
+    
+var InventoryListView = function() {
+    Handler.call(this);
+};
+
+util.inherits(InventoryListView, Handler);
+
+InventoryListView.prototype.Handle = function(event) {
+    if(event instanceof InventoryItemCreated)
     {
-        public void Handle(InventoryItemCreated message)
-        {
-            BullShitDatabase.list.Add(new InventoryItemListDto(message.Id, message.Name));
+        var fakeDatabase = FakeDatabase.getInstance();
+        fakeDatabase.list.push(new InventoryItemListDto(event.id, event.name));
+    } else if (event instanceof InventoryItemDeactivated) {
+        var fakeDatabase = FakeDatabase.getInstance();
+        for(inventoryItemListDto in fakeDatabase.list) {
+            if(inventoryItemListDto.id == event.id) {                
+                fakeDatabase.list.splice(fakeDatabase.list.indexOf(inventoryItemListDto), 1)
+                break;
+            }
         }
-
-        public void Handle(InventoryItemRenamed message)
-        {
-            var item = BullShitDatabase.list.Find(x => x.Id == message.Id);
-            item.Name = message.NewName;
+    } else if (event instanceof InventoryItemRenamed) {
+        var fakeDatabase = FakeDatabase.getInstance();
+        for(inventoryItemListDto in fakeDatabase.list) {
+            if(inventoryItemListDto.id == event.id) {
+                inventoryItemListDto.name = event.newName;
+                break;
+            }
         }
-
-        public void Handle(InventoryItemDeactivated message)
-        {
-            BullShitDatabase.list.RemoveAll(x => x.Id == message.Id);
-        }
+    }/* else if (event instanceof ItemsCheckedInToInventory) {
+    } else if (event instanceof ItemsRemovedFromInventory) {
     }*/
+};
+
+module.exports = InventoryListView;

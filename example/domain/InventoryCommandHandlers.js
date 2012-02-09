@@ -1,3 +1,14 @@
+/*var Event = require("../../../lib/domain/event"),
+    util = require("util");
+*/
+var InventoryCommandHandlers  = function(repository) {
+    this.repository = repository;
+};
+
+util.inherits(InventoryCommandHandlers, Event);
+
+module.exports = InventoryCommandHandlers;
+
 /*public class InventoryCommandHandlers
     {
         private readonly IRepository<InventoryItem> _repository;

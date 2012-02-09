@@ -1,43 +1,51 @@
-/*public class InventoryItemDetailView : Handles<InventoryItemCreated>, Handles<InventoryItemDeactivated>, Handles<InventoryItemRenamed>, Handles<ItemsRemovedFromInventory>, Handles<ItemsCheckedInToInventory>
+var Handler = require("../../../lib/domain/handler"),
+    util = require("util"),
+    FakeDatabase = require("./fakedatabase");
+    
+var InventoryItemDetailView = function() {
+    Handler.call(this);
+};
+
+util.inherits(InventoryItemDetailView, Handler);
+
+InventoryItemDetailView.prototype.Handle = function(event) {
+    if(event instanceof InventoryItemCreated)
     {
-        public void Handle(InventoryItemCreated message)
-        {
-            BullShitDatabase.details.Add(message.Id, new InventoryItemDetailsDto(message.Id, message.Name, 0,0));
-        }
-
-        public void Handle(InventoryItemRenamed message)
-        {
-            InventoryItemDetailsDto d = GetDetailsItem(message.Id);
-            d.Name = message.NewName;
-            d.Version = message.Version;
-        }
-
-        private InventoryItemDetailsDto GetDetailsItem(Guid id)
-        {
-            InventoryItemDetailsDto d;
-            if(!BullShitDatabase.details.TryGetValue(id, out d))
+        var fakeDatabase = FakeDatabase.getInstance();
+        fakeDatabase.details[event.id] = new InventoryItemDetailsDto(event.id, event.name, 0,0);
+    } else if (event instanceof InventoryItemDeactivated) {
+        var fakeDatabase = FakeDatabase.getInstance();
+        if(fakeDatabase.list.length != 0) {
+            if(event.id in fakeDatabase.details)
             {
-                throw new InvalidOperationException("did not find the original inventory this shouldnt happen");
+                var inventoryItemDetailsDto = fakeDatabase.details[event.id];
+                fakeDatabase.details.splice(fakeDatabase.details.indexOf(inventoryItemDetailsDto), 1);
             }
-            return d;
         }
+    } else if (event instanceof InventoryItemRenamed) {
+        var inventoryItemDetailsDto = this.GetDetailsItem(event.id);
+        inventoryItemDetailsDto.name = event.name;
+        inventoryItemDetailsDto.version = event.version;
+    } else if (event instanceof ItemsCheckedInToInventory) {
+        var inventoryItemDetailsDto = this.GetDetailsItem(event.id);
+        inventoryItemDetailsDto.currentCount += event.Count;
+        inventoryItemDetailsDto.version = event.version;
+    } else if (event instanceof ItemsRemovedFromInventory) {
+        var inventoryItemDetailsDto = this.GetDetailsItem(event.id);
+        inventoryItemDetailsDto.currentCount -= event.Count;
+        inventoryItemDetailsDto.version = event.version;
+    }
+};
 
-        public void Handle(ItemsRemovedFromInventory message)
+InventoryItemDetailView.prototype.GetDetailsItem = function(id) {
+    var fakeDatabase = FakeDatabase.getInstance();
+    if(fakeDatabase.list.length != 0) {
+        if(id in fakeDatabase.list)
         {
-            InventoryItemDetailsDto d = GetDetailsItem(message.Id);
-            d.CurrentCount -= message.Count;
-            d.Version = message.Version;
+            return fakeDatabase.list[id];
         }
+    }
+    throw new Error("InventoryItemDetails not found.");
+};
 
-        public void Handle(ItemsCheckedInToInventory message)
-        {
-            InventoryItemDetailsDto d = GetDetailsItem(message.Id);
-            d.CurrentCount += message.Count;
-            d.Version = message.Version;
-        }
-
-        public void Handle(InventoryItemDeactivated message)
-        {
-            BullShitDatabase.details.Remove(message.Id);
-        }
-    }*/
+module.exports = InventoryItemDetailView;

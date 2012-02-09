@@ -1,11 +1,6 @@
-/*public class InventoryItemListDto
-    {
-        public Guid Id;
-        public string Name;
+var InventoryItemListDto = function(id, name) {
+    this.id = id;
+    this.name = name;
+};
 
-        public InventoryItemListDto(Guid id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
-    }*/
+module.exports = InventoryItemListDto;

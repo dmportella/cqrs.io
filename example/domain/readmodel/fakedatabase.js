@@ -1,5 +1,15 @@
-/*public static class BullShitDatabase 
-    {
-        public static Dictionary<Guid, InventoryItemDetailsDto> details = new Dictionary<Guid,InventoryItemDetailsDto>();
-        public static List<InventoryItemListDto> list = new List<InventoryItemListDto>();
-    }*/
+var FakeDatabase = function() {
+    if ( arguments.callee.instance ) {
+        return arguments.callee.instance;
+    }
+    arguments.callee.instance = this;
+    this.details = [];
+    this.list = [];
+};
+
+FakeDatabase.prototype.getInstance = function() {
+    var fakeDatabase = new FakeDatabase();
+    return fakeDatabase;
+};
+
+module.exports = FakeDatabase;

@@ -1,15 +1,8 @@
-/*public class InventoryItemDetailsDto
-    {
-        public Guid Id;
-        public string Name;
-        public int CurrentCount;
-        public int Version;
+var InventoryItemDetailsDto = function(id, name, currentCount, version) {
+    this.id = id;
+    this.name = name;
+    this.currentCount = currentCount;
+    this.version = version;
+};
 
-        public InventoryItemDetailsDto(Guid id, string name, int currentCount, int version)
-        {
-    		Id = id;
-			Name = name;
-            CurrentCount = currentCount;
-            Version = version;
-        }
-    }*/
+module.exports = InventoryItemDetailsDto;

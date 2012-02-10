@@ -27,18 +27,19 @@ InventoryItemDetailView.prototype.Handle = function(message) {
     } else if (message instanceof InventoryItemDeactivated) {
         var fakeDatabase = FakeDatabase.getInstance();
         var inventoryItemDetailsDto = this.GetDetailsItem(message.id);
+        // todo fix indexof bug
         fakeDatabase.details.splice(fakeDatabase.details.indexOf(inventoryItemDetailsDto), 1);
     } else if (message instanceof InventoryItemRenamed) {
         var inventoryItemDetailsDto = this.GetDetailsItem(message.id);
-        inventoryItemDetailsDto.name = message.name;
+        inventoryItemDetailsDto.name = message.newName;
         inventoryItemDetailsDto.version = message.version;
     } else if (message instanceof ItemsCheckedInToInventory) {
         var inventoryItemDetailsDto = this.GetDetailsItem(message.id);
-        inventoryItemDetailsDto.currentCount += message.Count;
+        inventoryItemDetailsDto.currentCount += message.count;
         inventoryItemDetailsDto.version = message.version;
     } else if (message instanceof ItemsRemovedFromInventory) {
         var inventoryItemDetailsDto = this.GetDetailsItem(message.id);
-        inventoryItemDetailsDto.currentCount -= message.Count;
+        inventoryItemDetailsDto.currentCount -= message.count;
         inventoryItemDetailsDto.version = message.version;
     }
 };

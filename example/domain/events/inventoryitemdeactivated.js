@@ -3,7 +3,7 @@ var Event = require("../../../lib/domain/event"),
 
 var InventoryItemDeactivated  = function(id) {
     Event.call(this);
-    this.id = 0;
+    this.id = id;
 };
 
 util.inherits(InventoryItemDeactivated, Event);

@@ -1,9 +1,9 @@
 var Command = require("../../../lib/domain/command"),
     util = require("util");
 
-var CreateInventoryItem  = function(inventoryItemId, name) {
+var CreateInventoryItem  = function(id, name) {
     Command.call(this);
-    this.inventoryItemId = inventoryItemId;
+    this.id = id;
     this.name = name;    
 };
 

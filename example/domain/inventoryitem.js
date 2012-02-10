@@ -33,7 +33,7 @@ InventoryItem.prototype.Apply = function(event) {
 };
 
 InventoryItem.prototype.ChangeName = function(newName) {
-    if(!event.newName || 0 === event.newName.length)
+    if(!newName || 0 === newName.length)
     {
         throw new Error("Argument Exception newName.");
     }

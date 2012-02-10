@@ -27,16 +27,16 @@ InventoryListView.prototype.Handle = function(message) {
     } else if (message instanceof InventoryItemDeactivated) {
         var fakeDatabase = FakeDatabase.getInstance();
         for(inventoryItemListDto in fakeDatabase.list) {
-            if(inventoryItemListDto.id == message.id) {                
-                fakeDatabase.list.splice(fakeDatabase.list.indexOf(inventoryItemListDto), 1);
+            if(fakeDatabase.list[inventoryItemListDto].id == message.id) {                
+                fakeDatabase.list.splice(inventoryItemListDto, 1);
                 break;
             }
         }
     } else if (message instanceof InventoryItemRenamed) {
         var fakeDatabase = FakeDatabase.getInstance();
         for(inventoryItemListDto in fakeDatabase.list) {
-            if(inventoryItemListDto.id == message.id) {
-                inventoryItemListDto.name = message.newName;
+            if(fakeDatabase.list[inventoryItemListDto].id == message.id) {
+                fakeDatabase.list[inventoryItemListDto].name = message.newName;
                 break;
             }
         }

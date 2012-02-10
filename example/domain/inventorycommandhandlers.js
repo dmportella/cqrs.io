@@ -17,28 +17,40 @@ var InventoryCommandHandlers  = function(repository) {
 util.inherits(InventoryCommandHandlers, Handler);
 
 InventoryCommandHandlers.prototype.Handle = function(message) {
+    var self = this;
     if(message instanceof CheckInItemsToInventory)
     {
-        var inventoryItem = new InventoryItem();
-        inventoryItem.id = message.inventoryItemId;
-        this.repository.GetById(inventoryItem);
-        inventoryItem.CheckIn(message.count);
-        this.repository.Save(inventoryItem, message.originalVersion);
+        this.repository.GetById(message.id, function(events) {
+            var inventoryItem = new InventoryItem();
+            inventoryItem.LoadsFromHistory(events);
+            inventoryItem.CheckIn(message.count);
+            self.repository.Save(inventoryItem, message.originalVersion);
+        });
+        
     } else if (message instanceof CreateInventoryItem) {
-        var inventoryItem = new InventoryItem(message.inventoryItemId, message.name);
+        var inventoryItem = new InventoryItem(message.id, message.name);
         this.repository.Save(inventoryItem, -1);        
     } else if (message instanceof DeactivateInventoryItem) {
-        var inventoryItem = this.repository.GetById(message.inventoryItemId);
-        inventoryItem.Deactivate();
-        this.repository.Save(inventoryItem, message.originalVersion);
+        this.repository.GetById(message.id, function(events) {
+            var inventoryItem = new InventoryItem();
+            inventoryItem.LoadsFromHistory(events);
+            inventoryItem.Deactivate();
+            self.repository.Save(inventoryItem, message.originalVersion);
+        });
     } else if (message instanceof RemoveItemsFromInventory) {
-        var inventoryItem = this.repository.GetById(message.inventoryItemId);
-        inventoryItem.Remove(message.Count);
-        this.repository.Save(inventoryItem, message.originalVersion);
+        this.repository.GetById(message.id, function(events) {
+            var inventoryItem = new InventoryItem();
+            inventoryItem.LoadsFromHistory(events);
+            inventoryItem.Remove(message.count);
+            self.repository.Save(inventoryItem, message.originalVersion);
+        });
     } else if (message instanceof RenameInventoryItem) {
-        var inventoryItem = this.repository.GetById(message.inventoryItemId);
-        inventoryItem.ChangeName(message.NewName);
-        this.repository.Save(inventoryItem, message.originalVersion);
+        this.repository.GetById(message.id, function(events) {
+            var inventoryItem = new InventoryItem();
+            inventoryItem.LoadsFromHistory(events);
+            inventoryItem.ChangeName(message.newName);
+            self.repository.Save(inventoryItem, message.originalVersion);
+        });
     }
 };
 

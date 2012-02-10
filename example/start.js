@@ -82,11 +82,11 @@ var removeItemsFromInventory = new RemoveItemsFromInventory(inventoryItemDetails
 
 bus.Send(removeItemsFromInventory);
 
-var renameInventoryItem = new RenameInventoryItem();
+var renameInventoryItem = new RenameInventoryItem(inventoryItemDetailsDto.id, "castle lego set", inventoryItemDetailsDto.version);
 
 bus.Send(renameInventoryItem);
 
-var deactivateInventoryItem = new DeactivateInventoryItem();
+var deactivateInventoryItem = new DeactivateInventoryItem(inventoryItemDetailsDto.id, inventoryItemDetailsDto.version);
 
 bus.Send(deactivateInventoryItem);
 

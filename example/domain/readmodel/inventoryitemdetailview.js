@@ -26,13 +26,8 @@ InventoryItemDetailView.prototype.Handle = function(message) {
         fakeDatabase.details[message.id] = new InventoryItemDetailsDto(message.id, message.name, 0,0);
     } else if (message instanceof InventoryItemDeactivated) {
         var fakeDatabase = FakeDatabase.getInstance();
-        if(fakeDatabase.list.length != 0) {
-            if(message.id in fakeDatabase.details)
-            {
-                var inventoryItemDetailsDto = fakeDatabase.details[message.id];
-                fakeDatabase.details.splice(fakeDatabase.details.indexOf(inventoryItemDetailsDto), 1);
-            }
-        }
+        var inventoryItemDetailsDto = this.GetDetailsItem(message.id);
+        fakeDatabase.details.splice(fakeDatabase.details.indexOf(inventoryItemDetailsDto), 1);
     } else if (message instanceof InventoryItemRenamed) {
         var inventoryItemDetailsDto = this.GetDetailsItem(message.id);
         inventoryItemDetailsDto.name = message.name;
@@ -50,11 +45,9 @@ InventoryItemDetailView.prototype.Handle = function(message) {
 
 InventoryItemDetailView.prototype.GetDetailsItem = function(id) {
     var fakeDatabase = FakeDatabase.getInstance();
-    if(fakeDatabase.list.length != 0) {
-        if(id in fakeDatabase.list)
-        {
-            return fakeDatabase.list[id];
-        }
+    if(id in fakeDatabase.details)
+    {
+        return fakeDatabase.details[id];
     }
     throw new Error("InventoryItemDetails not found.");
 };

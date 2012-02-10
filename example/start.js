@@ -11,7 +11,10 @@ var InventoryItemCreated = require("./domain/events/inventoryitemcreated"),
     InventoryItemRenamed = require("./domain/events/inventoryitemrenamed"),
     ItemsCheckedInToInventory = require("./domain/events/itemscheckedintoinventory"),
     ItemsRemovedFromInventory = require("./domain/events/itemsremovedfrominventory");
-    
+
+// READMODEL
+var ReadModelFacade = require("./domain/readmodel/readmodelfacade");
+
 // VIEWS
 var InventoryItemDetailView = require("./domain/readmodel/inventoryitemdetailview"),
     InventoryListView = require("./domain/readmodel/inventorylistview");
@@ -23,7 +26,7 @@ var FakeBus = require("./domain/bus/fakebus");
 var InventoryCommandHandlers = require("./domain/inventorycommandhandlers");
 
 // EVENT STORE
-var MemoryEventStore = require("../lib/memoryeventstore");
+var MemoryEventStore = require("../lib/builtin/memoryeventstore");
 
 // REPOSITORY
 var Repository = require("../lib/domain/repository");
@@ -34,6 +37,8 @@ var InventoryItemDetailsDto = require("./domain/readmodel/inventoryitemdetailsdt
     
 // SERVICELOCATOR
 var ServiceLocator = require("./servicelocator");
+
+var readModelFacade = new ReadModelFacade();
     
 var bus = new FakeBus();
 
@@ -66,5 +71,23 @@ bus.RegisterHandler(InventoryItemDeactivated, list);
 var createInventoryItem = new CreateInventoryItem("1q2we3r4r4r", "lego set");
 
 bus.Send(createInventoryItem);
+
+var inventoryItemDetailsDto = readModelFacade.GetInventoryItemDetails("1q2we3r4r4r");
+
+var checkInItemsToInventory = new CheckInItemsToInventory(inventoryItemDetailsDto.id, 1, inventoryItemDetailsDto.version);
+
+bus.Send(checkInItemsToInventory);
+
+var removeItemsFromInventory = new RemoveItemsFromInventory(inventoryItemDetailsDto.id, 1, inventoryItemDetailsDto.version);
+
+bus.Send(removeItemsFromInventory);
+
+var renameInventoryItem = new RenameInventoryItem();
+
+bus.Send(renameInventoryItem);
+
+var deactivateInventoryItem = new DeactivateInventoryItem();
+
+bus.Send(deactivateInventoryItem);
 
 ServiceLocator.registerService("bus", bus);

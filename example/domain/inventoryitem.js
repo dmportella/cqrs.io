@@ -10,7 +10,9 @@ var AggregateRoot = require("../../lib/domain/aggregateroot"),
 
 var InventoryItem  = function(id, name) {
     AggregateRoot.call(this);
-    this.ApplyChange(new InventoryItemCreated(id, name));
+    if(id && name) {
+        this.ApplyChange(new InventoryItemCreated(id, name));
+    }
 };
 
 util.inherits(InventoryItem, AggregateRoot);
@@ -42,14 +44,14 @@ InventoryItem.prototype.Remove = function(count) {
     if (count <= 0) {
         throw new Error("InvalidOperationException cant remove negative count from inventory.");
     }
-    this.ApplyChange(new ItemsRemovedFromInventory(id, count));
+    this.ApplyChange(new ItemsRemovedFromInventory(this.id, count));
 };
 
 InventoryItem.prototype.CheckIn = function(count) {
     if (count <= 0) {
         throw new Error("must have a count greater than 0 to add to inventory.");
     }
-    this.ApplyChange(new ItemsCheckedInToInventory(id, count));
+    this.ApplyChange(new ItemsCheckedInToInventory(this.id, count));
 };
 
 InventoryItem.prototype.Deactivate = function() {

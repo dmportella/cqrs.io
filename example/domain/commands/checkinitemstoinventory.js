@@ -6,7 +6,6 @@ var CheckInItemsToInventory  = function(inventoryItemId, count, originalVersion)
     this.inventoryItemId = inventoryItemId;
     this.count = count;
     this.originalVersion = originalVersion;
-    
 };
 
 util.inherits(CheckInItemsToInventory, Command);

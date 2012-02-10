@@ -19,7 +19,9 @@ util.inherits(InventoryCommandHandlers, Handler);
 InventoryCommandHandlers.prototype.Handle = function(message) {
     if(message instanceof CheckInItemsToInventory)
     {
-        var inventoryItem = this.repository.GetById(message.InventoryItemId);
+        var inventoryItem = new InventoryItem();
+        inventoryItem.id = message.inventoryItemId;
+        this.repository.GetById(inventoryItem);
         inventoryItem.CheckIn(message.count);
         this.repository.Save(inventoryItem, message.originalVersion);
     } else if (message instanceof CreateInventoryItem) {

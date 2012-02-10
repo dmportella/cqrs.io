@@ -1,3 +1,5 @@
+var FakeDatabase = require("./fakedatabase");
+
 var ReadModelFacade = function() {
 };
 
@@ -7,14 +9,11 @@ ReadModelFacade.prototype.GetInventoryItems = function(){
 
 ReadModelFacade.prototype.GetInventoryItemDetails = function(id){
     var fakeDatabase = FakeDatabase.getInstance();
-    if(fakeDatabase.list.length != 0) {
-        if(id in fakeDatabase.list)
-        {
-            return fakeDatabase.list[id];
-        } else {
-            throw new Error("InventoryItemDetails not found.");
-        }
+    if(id in fakeDatabase.details)
+    {
+        return fakeDatabase.details[id];
     }
+    throw new Error("InventoryItemDetails not found.");
 };
 
 module.exports = ReadModelFacade;

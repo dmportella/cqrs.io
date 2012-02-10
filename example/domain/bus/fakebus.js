@@ -1,5 +1,5 @@
-var EventPublisher = require("../../lib/domain/eventpublisher"),
-    CommandSender = require("../../lib/domain/commandsender"),
+var EventPublisher = require("../../../lib/domain/eventpublisher"),
+    CommandSender = require("../../../lib/domain/commandsender"),
     util = require("util");
 
 var FakeBus  = function() {
@@ -7,6 +7,9 @@ var FakeBus  = function() {
     CommandSender.call(this);
     this.handlers = [];
 };
+
+util.inherits(FakeBus, EventPublisher);
+util.inherits(FakeBus, CommandSender);
 
 FakeBus.prototype.RegisterHandler = function(type, handler) {
     if(type in this.handlers)
@@ -25,11 +28,11 @@ FakeBus.prototype.RegisterHandler = function(type, handler) {
 };
 
 FakeBus.prototype.Send = function(command) {
-    if(command in this.handlers)
+    if(command.constructor in this.handlers)
     {
-        for(commandHandler in this.handlers[command])
+        for(commandHandler in this.handlers[command.constructor])
         {
-            commandHandler.handle(command);
+            this.handlers[command.constructor][commandHandler].Handle(command);
         }
     } else {
         throw new Error("InvalidOperationException no handler registered.");
@@ -37,48 +40,15 @@ FakeBus.prototype.Send = function(command) {
 };
 
 FakeBus.prototype.Publish = function(event) {
-    if(event in this.handlers)
+    if(event.constructor in this.handlers)
     {
-        for(eventHandler in this.handlers[event])
+        for(eventHandler in this.handlers[event.constructor])
         {
-            eventHandler.handle(event);
+            this.handlers[event.constructor][eventHandler].Handle(event);
         }
     } else {
         throw new Error("InvalidOperationException no handler registered.");
     }
 };
 
-util.inherits(FakeBus, EventPublisher);
-util.inherits(FakeBus, CommandSender);
-
 module.exports = FakeBus;
-
-/*public class FakeBus : ICommandSender, IEventPublisher
-    {
-        
-        public void Send<T>(T command) where T : Command
-        {
-            List<Action<Message>> handlers; 
-            if (_routes.TryGetValue(typeof(T), out handlers))
-            {
-                if (handlers.Count != 1) throw new InvalidOperationException("cannot send to more than one handler");
-                handlers[0](command);
-            }
-            else
-            {
-                throw new InvalidOperationException("no handler registered");
-            }
-        }
-
-        public void Publish<T>(T @event) where T : Event
-        {
-            List<Action<Message>> handlers; 
-            if (!_routes.TryGetValue(@event.GetType(), out handlers)) return;
-            foreach(var handler in handlers)
-            {
-                //dispatch on thread pool for added awesomeness
-                var handler1 = handler;
-                ThreadPool.QueueUserWorkItem(x => handler1(@event));
-            }
-        }
-    }*/

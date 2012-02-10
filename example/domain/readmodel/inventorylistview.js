@@ -1,3 +1,14 @@
+// EVENTS
+var InventoryItemCreated = require("../events/inventoryitemcreated"),
+    InventoryItemDeactivated = require("../events/inventoryitemdeactivated"),
+    InventoryItemRenamed = require("../events/inventoryitemrenamed"),
+    ItemsCheckedInToInventory = require("../events/itemscheckedintoinventory"),
+    ItemsRemovedFromInventory = require("../events/itemsremovedfrominventory");
+
+// DTOS
+var InventoryItemDetailsDto = require("./inventoryitemdetailsdto"),
+    InventoryItemListDto = require("./inventoryitemlistdto");
+
 var Handler = require("../../../lib/domain/handler"),
     util = require("util"),
     FakeDatabase = require("./fakedatabase");
@@ -8,29 +19,29 @@ var InventoryListView = function() {
 
 util.inherits(InventoryListView, Handler);
 
-InventoryListView.prototype.Handle = function(event) {
-    if(event instanceof InventoryItemCreated)
+InventoryListView.prototype.Handle = function(message) {
+    if(message instanceof InventoryItemCreated)
     {
         var fakeDatabase = FakeDatabase.getInstance();
-        fakeDatabase.list.push(new InventoryItemListDto(event.id, event.name));
-    } else if (event instanceof InventoryItemDeactivated) {
+        fakeDatabase.list.push(new InventoryItemListDto(message.id, message.name));
+    } else if (message instanceof InventoryItemDeactivated) {
         var fakeDatabase = FakeDatabase.getInstance();
         for(inventoryItemListDto in fakeDatabase.list) {
-            if(inventoryItemListDto.id == event.id) {                
-                fakeDatabase.list.splice(fakeDatabase.list.indexOf(inventoryItemListDto), 1)
+            if(inventoryItemListDto.id == message.id) {                
+                fakeDatabase.list.splice(fakeDatabase.list.indexOf(inventoryItemListDto), 1);
                 break;
             }
         }
-    } else if (event instanceof InventoryItemRenamed) {
+    } else if (message instanceof InventoryItemRenamed) {
         var fakeDatabase = FakeDatabase.getInstance();
         for(inventoryItemListDto in fakeDatabase.list) {
-            if(inventoryItemListDto.id == event.id) {
-                inventoryItemListDto.name = event.newName;
+            if(inventoryItemListDto.id == message.id) {
+                inventoryItemListDto.name = message.newName;
                 break;
             }
         }
-    }/* else if (event instanceof ItemsCheckedInToInventory) {
-    } else if (event instanceof ItemsRemovedFromInventory) {
+    }/* else if (message instanceof ItemsCheckedInToInventory) {
+    } else if (message instanceof ItemsRemovedFromInventory) {
     }*/
 };
 

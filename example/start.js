@@ -1,54 +1,70 @@
 // COMMANDS
-var CheckInItemsToInventory = require("./commands/checkinitemstoinventory"),
-    CreateInventoryItem = require("./commands/createinventoryitem"),
-    DeactivateInventoryItem = require("./commands/deactivateinventoryitem"),
-    RemoveItemsFromInventory = require("./commands/removeitemsfrominventory"),
-    RenameInventoryItem = require("./commands/renameinventoryitem");
+var CheckInItemsToInventory = require("./domain/commands/checkinitemstoinventory"),
+    CreateInventoryItem = require("./domain/commands/createinventoryitem"),
+    DeactivateInventoryItem = require("./domain/commands/deactivateinventoryitem"),
+    RemoveItemsFromInventory = require("./domain/commands/removeitemsfrominventory"),
+    RenameInventoryItem = require("./domain/commands/renameinventoryitem");
     
 // EVENTS
-var InventoryItemCreated = require("./events/inventoryitemcreated"),
-    InventoryItemDeactivated = require("./events/inventoryitemdeactivated"),
-    InventoryItemRenamed = require("./events/inventoryitemrenamed"),
-    ItemsCheckedInToInventory = require("./events/itemscheckedintoinventory"),
-    ItemsRemovedFromInventory = require("./events/itemsremovedfrominventory");
+var InventoryItemCreated = require("./domain/events/inventoryitemcreated"),
+    InventoryItemDeactivated = require("./domain/events/inventoryitemdeactivated"),
+    InventoryItemRenamed = require("./domain/events/inventoryitemrenamed"),
+    ItemsCheckedInToInventory = require("./domain/events/itemscheckedintoinventory"),
+    ItemsRemovedFromInventory = require("./domain/events/itemsremovedfrominventory");
     
 // VIEWS
-var InventoryItemDetailView = require("./readmodel/inventoryitemdetailview"),
-    InventoryListView = require("./readmodel/inventoryitemdeactivated");
+var InventoryItemDetailView = require("./domain/readmodel/inventoryitemdetailview"),
+    InventoryListView = require("./domain/readmodel/inventorylistview");
     
 // BUS
-var FakeBus = require("./bus/fakebus");
+var FakeBus = require("./domain/bus/fakebus");
 
 // HANDLERS
-var InventoryCommandHandlers = require("./inventorycommandhandlers");
+var InventoryCommandHandlers = require("./domain/inventorycommandhandlers");
 
 // EVENT STORE
-var MemoryEventStore = require("../lib/domain/memoryeventstore");
+var MemoryEventStore = require("../lib/memoryeventstore");
 
 // REPOSITORY
 var Repository = require("../lib/domain/repository");
 
-
-/*
+// DTOS
+var InventoryItemDetailsDto = require("./domain/readmodel/inventoryitemdetailsdto"),
+    InventoryItemListDto = require("./domain/readmodel/inventoryitemlistdto");
+    
+// SERVICELOCATOR
+var ServiceLocator = require("./servicelocator");
+    
 var bus = new FakeBus();
 
-var storage = new EventStore(bus);
-var rep = new Repository<InventoryItem>(storage);
+var storage = new MemoryEventStore(bus);
+
+var rep = new Repository(storage);
+
 var commands = new InventoryCommandHandlers(rep);
-bus.RegisterHandler<CheckInItemsToInventory>(commands.Handle);
-bus.RegisterHandler<CreateInventoryItem>(commands.Handle);
-bus.RegisterHandler<DeactivateInventoryItem>(commands.Handle);
-bus.RegisterHandler<RemoveItemsFromInventory>(commands.Handle);
-bus.RegisterHandler<RenameInventoryItem>(commands.Handle);
-var detail = new InvenotryItemDetailView();
-bus.RegisterHandler<InventoryItemCreated>(detail.Handle);
-bus.RegisterHandler<InventoryItemDeactivated>(detail.Handle);
-bus.RegisterHandler<InventoryItemRenamed>(detail.Handle);
-bus.RegisterHandler<ItemsCheckedInToInventory>(detail.Handle);
-bus.RegisterHandler<ItemsRemovedFromInventory>(detail.Handle);
+
+bus.RegisterHandler(CheckInItemsToInventory, commands);
+bus.RegisterHandler(CreateInventoryItem, commands);
+bus.RegisterHandler(DeactivateInventoryItem, commands);
+bus.RegisterHandler(RemoveItemsFromInventory, commands);
+bus.RegisterHandler(RenameInventoryItem, commands);
+
+var detail = new InventoryItemDetailView();
+
+bus.RegisterHandler(InventoryItemCreated, detail);
+bus.RegisterHandler(InventoryItemDeactivated, detail);
+bus.RegisterHandler(InventoryItemRenamed, detail);
+bus.RegisterHandler(ItemsCheckedInToInventory, detail);
+bus.RegisterHandler(ItemsRemovedFromInventory, detail);
+
 var list = new InventoryListView();
-bus.RegisterHandler<InventoryItemCreated>(list.Handle);
-bus.RegisterHandler<InventoryItemRenamed>(list.Handle);
-bus.RegisterHandler<InventoryItemDeactivated>(list.Handle);
-ServiceLocator.Bus = bus;
-*/
+
+bus.RegisterHandler(InventoryItemCreated, list);
+bus.RegisterHandler(InventoryItemRenamed, list);
+bus.RegisterHandler(InventoryItemDeactivated, list);
+
+var createInventoryItem = new CreateInventoryItem("1q2we3r4r4r", "lego set");
+
+bus.Send(createInventoryItem);
+
+ServiceLocator.registerService("bus", bus);

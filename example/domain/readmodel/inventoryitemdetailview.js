@@ -1,3 +1,14 @@
+// EVENTS
+var InventoryItemCreated = require("../events/inventoryitemcreated"),
+    InventoryItemDeactivated = require("../events/inventoryitemdeactivated"),
+    InventoryItemRenamed = require("../events/inventoryitemrenamed"),
+    ItemsCheckedInToInventory = require("../events/itemscheckedintoinventory"),
+    ItemsRemovedFromInventory = require("../events/itemsremovedfrominventory");
+    
+// DTOS
+var InventoryItemDetailsDto = require("./inventoryitemdetailsdto"),
+    InventoryItemListDto = require("./inventoryitemlistdto");
+
 var Handler = require("../../../lib/domain/handler"),
     util = require("util"),
     FakeDatabase = require("./fakedatabase");
@@ -8,32 +19,32 @@ var InventoryItemDetailView = function() {
 
 util.inherits(InventoryItemDetailView, Handler);
 
-InventoryItemDetailView.prototype.Handle = function(event) {
-    if(event instanceof InventoryItemCreated)
+InventoryItemDetailView.prototype.Handle = function(message) {
+    if(message instanceof InventoryItemCreated)
     {
         var fakeDatabase = FakeDatabase.getInstance();
-        fakeDatabase.details[event.id] = new InventoryItemDetailsDto(event.id, event.name, 0,0);
-    } else if (event instanceof InventoryItemDeactivated) {
+        fakeDatabase.details[message.id] = new InventoryItemDetailsDto(message.id, message.name, 0,0);
+    } else if (message instanceof InventoryItemDeactivated) {
         var fakeDatabase = FakeDatabase.getInstance();
         if(fakeDatabase.list.length != 0) {
-            if(event.id in fakeDatabase.details)
+            if(message.id in fakeDatabase.details)
             {
-                var inventoryItemDetailsDto = fakeDatabase.details[event.id];
+                var inventoryItemDetailsDto = fakeDatabase.details[message.id];
                 fakeDatabase.details.splice(fakeDatabase.details.indexOf(inventoryItemDetailsDto), 1);
             }
         }
-    } else if (event instanceof InventoryItemRenamed) {
-        var inventoryItemDetailsDto = this.GetDetailsItem(event.id);
-        inventoryItemDetailsDto.name = event.name;
-        inventoryItemDetailsDto.version = event.version;
-    } else if (event instanceof ItemsCheckedInToInventory) {
-        var inventoryItemDetailsDto = this.GetDetailsItem(event.id);
-        inventoryItemDetailsDto.currentCount += event.Count;
-        inventoryItemDetailsDto.version = event.version;
-    } else if (event instanceof ItemsRemovedFromInventory) {
-        var inventoryItemDetailsDto = this.GetDetailsItem(event.id);
-        inventoryItemDetailsDto.currentCount -= event.Count;
-        inventoryItemDetailsDto.version = event.version;
+    } else if (message instanceof InventoryItemRenamed) {
+        var inventoryItemDetailsDto = this.GetDetailsItem(message.id);
+        inventoryItemDetailsDto.name = message.name;
+        inventoryItemDetailsDto.version = message.version;
+    } else if (message instanceof ItemsCheckedInToInventory) {
+        var inventoryItemDetailsDto = this.GetDetailsItem(message.id);
+        inventoryItemDetailsDto.currentCount += message.Count;
+        inventoryItemDetailsDto.version = message.version;
+    } else if (message instanceof ItemsRemovedFromInventory) {
+        var inventoryItemDetailsDto = this.GetDetailsItem(message.id);
+        inventoryItemDetailsDto.currentCount -= message.Count;
+        inventoryItemDetailsDto.version = message.version;
     }
 };
 

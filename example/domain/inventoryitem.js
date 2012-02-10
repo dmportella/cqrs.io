@@ -1,3 +1,10 @@
+// EVENTS
+var InventoryItemCreated = require("./events/inventoryitemcreated"),
+    InventoryItemDeactivated = require("./events/inventoryitemdeactivated"),
+    InventoryItemRenamed = require("./events/inventoryitemrenamed"),
+    ItemsCheckedInToInventory = require("./events/itemscheckedintoinventory"),
+    ItemsRemovedFromInventory = require("./events/itemsremovedfrominventory");
+    
 var AggregateRoot = require("../../lib/domain/aggregateroot"),
     util = require("util");
 
@@ -46,10 +53,10 @@ InventoryItem.prototype.CheckIn = function(count) {
 };
 
 InventoryItem.prototype.Deactivate = function() {
-    if(!activated) {
+    if(!this.activated) {
         throw new Error("InvalidOperationException already deactivated.");
     }
-    this.ApplyChange(new InventoryItemDeactivated(id));
+    this.ApplyChange(new InventoryItemDeactivated(this.id));
 };
 
 module.exports = InventoryItem;

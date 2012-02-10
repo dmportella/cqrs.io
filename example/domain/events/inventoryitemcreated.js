@@ -3,7 +3,7 @@ var Event = require("../../../lib/domain/event"),
 
 var InventoryItemCreated  = function(id, name) {
     Event.call(this);
-    this.id = 0;
+    this.id = id;
     this.name = name;
 };
 

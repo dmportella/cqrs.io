@@ -7,7 +7,7 @@ var FakeDatabase = function() {
     this.list = [];
 };
 
-FakeDatabase.prototype.getInstance = function() {
+FakeDatabase.getInstance = function() {
     var fakeDatabase = new FakeDatabase();
     return fakeDatabase;
 };

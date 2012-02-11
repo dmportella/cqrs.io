@@ -9,9 +9,10 @@ ReadModelFacade.prototype.GetInventoryItems = function(){
 
 ReadModelFacade.prototype.GetInventoryItemDetails = function(id){
     var fakeDatabase = FakeDatabase.getInstance();
-    if(id in fakeDatabase.details)
-    {
-        return fakeDatabase.details[id];
+    for (var i = 0; i < fakeDatabase.details.length; i++) {
+            if(fakeDatabase.details[i].id == id) {
+                return fakeDatabase.details[i];
+            }
     }
     throw new Error("InventoryItemDetails not found.");
 };

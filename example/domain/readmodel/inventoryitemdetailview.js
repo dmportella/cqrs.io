@@ -23,12 +23,15 @@ InventoryItemDetailView.prototype.Handle = function(message) {
     if(message instanceof InventoryItemCreated)
     {
         var fakeDatabase = FakeDatabase.getInstance();
-        fakeDatabase.details[message.id] = new InventoryItemDetailsDto(message.id, message.name, 0,0);
+        fakeDatabase.details.push(new InventoryItemDetailsDto(message.id, message.name, 0,0));
     } else if (message instanceof InventoryItemDeactivated) {
         var fakeDatabase = FakeDatabase.getInstance();
-        var inventoryItemDetailsDto = this.GetDetailsItem(message.id);
-        // todo fix indexof bug
-        fakeDatabase.details.splice(fakeDatabase.details.indexOf(inventoryItemDetailsDto), 1);
+        for (var i = 0; i < fakeDatabase.details.length; i++) {
+            if(fakeDatabase.details[i].id == message.id) {
+                fakeDatabase.details.splice(i, 1);
+                break;
+            }
+        }
     } else if (message instanceof InventoryItemRenamed) {
         var inventoryItemDetailsDto = this.GetDetailsItem(message.id);
         inventoryItemDetailsDto.name = message.newName;
@@ -46,9 +49,10 @@ InventoryItemDetailView.prototype.Handle = function(message) {
 
 InventoryItemDetailView.prototype.GetDetailsItem = function(id) {
     var fakeDatabase = FakeDatabase.getInstance();
-    if(id in fakeDatabase.details)
-    {
-        return fakeDatabase.details[id];
+    for (var i = 0; i < fakeDatabase.details.length; i++) {
+            if(fakeDatabase.details[i].id == id) {
+                return fakeDatabase.details[i];
+            }
     }
     throw new Error("InventoryItemDetails not found.");
 };

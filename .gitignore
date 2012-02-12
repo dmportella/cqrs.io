@@ -1,0 +1,5 @@
+# A handy place to put stuff that git should ignore:
+/ignore/
+node_modules/connect/
+node_modules/ejs/
+node_modules/express/

@@ -68,6 +68,32 @@ bus.RegisterHandler(InventoryItemCreated, list);
 bus.RegisterHandler(InventoryItemRenamed, list);
 bus.RegisterHandler(InventoryItemDeactivated, list);
 
+ServiceLocator.registerService("bus", bus);
+
+var port = process.env.PORT || process.env.C9_PORT || 80;
+
+var util = require('util'),
+    express = require('express');
+    
+var app = express.createServer();
+
+app.configure(function() {
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.register('.html', require('ejs'));
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'html');
+    app.use(express.favicon());    
+    app.use(express.static(__dirname + '/public', { maxAge: 604800000 }));
+    app.use(express.staticCache());
+});
+
+app.get('/', function(req, res, next) {
+    res.render('index.html');
+});
+
+app.listen(port);
+/*
 var createInventoryItem = new CreateInventoryItem("1q2we3r4r4r", "lego set");
 
 bus.Send(createInventoryItem);
@@ -88,6 +114,5 @@ bus.Send(renameInventoryItem);
 
 var deactivateInventoryItem = new DeactivateInventoryItem(inventoryItemDetailsDto.id, inventoryItemDetailsDto.version);
 
-bus.Send(deactivateInventoryItem);
+bus.Send(deactivateInventoryItem);*/
 
-ServiceLocator.registerService("bus", bus);

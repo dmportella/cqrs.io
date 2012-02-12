@@ -3,3 +3,4 @@
 node_modules/connect/
 node_modules/ejs/
 node_modules/express/
+node_modules/.bin

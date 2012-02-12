@@ -28,7 +28,28 @@
     <link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
   </head>
   <body>
+  <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="./"> cqrs.io</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active">
+                <a href="./">Example</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   <div class="container">
       <%- body %> 
   </div>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/bootstrap.js"></script>
 </body>

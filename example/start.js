@@ -99,6 +99,17 @@ app.post("/products/add", function(req, res, next) {
     res.redirect("/");
 });
 
+app.post("/products/:id/:action", function(req, res, next) {
+    if(req.params.action == "checkin") {
+        var inventoryItemDetailsDto = readModelFacade.GetInventoryItemDetails(req.params.id);
+        
+        var checkInItemsToInventory = new CheckInItemsToInventory(inventoryItemDetailsDto.id, 1, inventoryItemDetailsDto.version);
+
+        bus.Send(checkInItemsToInventory);
+    }
+    res.send({ id : req.params.id, action : req.params.action });
+});
+
 app.listen(port);
 /*
 var inventoryItemDetailsDto = readModelFacade.GetInventoryItemDetails("1q2we3r4r4r");

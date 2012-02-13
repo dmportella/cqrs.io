@@ -12,9 +12,9 @@ util.inherits(FakeBus, EventPublisher);
 util.inherits(FakeBus, CommandSender);
 
 FakeBus.prototype.RegisterHandler = function(type, handler) {
-    if(type in this.handlers)
+    if(this.handlers[type])
     {
-        if(handler in this.handlers[type]) {
+        if(this.handlers[type].indexOf(handler) != -1) {
             throw new Error("Handler is already registered.");
         }
         else
@@ -28,11 +28,11 @@ FakeBus.prototype.RegisterHandler = function(type, handler) {
 };
 
 FakeBus.prototype.Send = function(command) {
-    if(command.constructor in this.handlers)
+    if(this.handlers[command.constructor])
     {
-        for(commandHandler in this.handlers[command.constructor])
+        for(var i = 0; i < this.handlers[command.constructor].length; i++)
         {
-            this.handlers[command.constructor][commandHandler].Handle(command);
+            this.handlers[command.constructor][i].Handle(command);
         }
     } else {
         throw new Error("InvalidOperationException no handler registered.");
@@ -40,11 +40,11 @@ FakeBus.prototype.Send = function(command) {
 };
 
 FakeBus.prototype.Publish = function(event) {
-    if(event.constructor in this.handlers)
+    if(this.handlers[event.constructor])
     {
-        for(eventHandler in this.handlers[event.constructor])
+        for(var i = 0; i < this.handlers[event.constructor].length; i++)
         {
-            this.handlers[event.constructor][eventHandler].Handle(event);
+            this.handlers[event.constructor][i].Handle(event);
         }
     } else {
         throw new Error("InvalidOperationException no handler registered.");

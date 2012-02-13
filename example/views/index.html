@@ -31,8 +31,8 @@
             <td><%=items[i].currentCount%></td>
             <td><%=items[i].version%></td>
             <td>
-                <a href="#"><i class="icon-plus-sign"></i> add</a>
-                <a href="#"><i class="icon-minus-sign"></i> remove</a>
+                <a href="#" onclick="productUpdate(<%=items[i].id%>, 'checkin');"><i class="icon-plus-sign"></i> add</a>
+                <a href="#" onclick="productUpdate(<%=items[i].id%>, 'remove');"><i class="icon-minus-sign"></i> remove</a>
             </td>
           </tr>
           <%}%>
@@ -44,3 +44,27 @@
 <footer>
 <p>&copy; dmportella 2012</p>
 </footer>
+<script>
+function productUpdate(id, action) {
+$.ajax({
+    url: "/products/" + id + "/" + action,
+    type: "POST",
+    dataType: "json",
+    cache: false,
+    timeout: 5000,
+    complete: function() {
+      //called when complete
+      console.log('process complete');
+    },
+
+    success: function(data) {
+      console.log(data);
+      console.log('process sucess');
+   },
+
+    error: function() {
+      console.log('process error');
+    },
+  });
+}
+</script>

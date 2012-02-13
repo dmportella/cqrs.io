@@ -7,6 +7,10 @@ ReadModelFacade.prototype.GetInventoryItems = function(){
     return FakeDatabase.getInstance().list;    
 };
 
+ReadModelFacade.prototype.GetInventoryDetails = function(id){
+    return FakeDatabase.getInstance().details;
+};
+
 ReadModelFacade.prototype.GetInventoryItemDetails = function(id){
     var fakeDatabase = FakeDatabase.getInstance();
     for (var i = 0; i < fakeDatabase.details.length; i++) {

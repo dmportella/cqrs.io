@@ -11,7 +11,8 @@
     <div class="span8">
     <h3>Fake Products</h3>
     <p>Small product list with stock count.</p>
-    <a href="#"><i class="icon-plus-sign"></i> Add product</a>
+    <form class="form-horizontal" action="/products/add" method="post" id="addProduct">
+    <input type="text" class="input-medium" id="name" name="name"><button type="submit" class="btn btn-primary">Add product</button></form>
       <table class="table table-striped table-bordered table-condensed">
         <thead>
           <tr>
@@ -23,15 +24,18 @@
           </tr>
         </thead>
         <tbody>
+        <%for(var i = 0; i < items.length;i++) {%>
           <tr>
-            <td>1</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>CSS</td>
+            <td><%=items[i].id%></td>
+            <td><%=items[i].name%></td>
+            <td><%=items[i].currentCount%></td>
+            <td><%=items[i].version%></td>
             <td>
-                <a href="#"><i class="icon-pencil"></i></a>
+                <a href="#"><i class="icon-plus-sign"></i> add</a>
+                <a href="#"><i class="icon-minus-sign"></i> remove</a>
             </td>
           </tr>
+          <%}%>
         </tbody>
       </table>
     </div>

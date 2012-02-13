@@ -89,15 +89,18 @@ app.configure(function() {
 });
 
 app.get('/', function(req, res, next) {
-    res.render('index.html');
+    res.render('index.html', { items : readModelFacade.GetInventoryDetails() });
+});
+
+app.post("/products/add", function(req, res, next) {
+    var details = readModelFacade.GetInventoryDetails();
+    var createInventoryItem = new CreateInventoryItem(details.length + 1, req.body.name);
+    bus.Send(createInventoryItem);
+    res.redirect("/");
 });
 
 app.listen(port);
 /*
-var createInventoryItem = new CreateInventoryItem("1q2we3r4r4r", "lego set");
-
-bus.Send(createInventoryItem);
-
 var inventoryItemDetailsDto = readModelFacade.GetInventoryItemDetails("1q2we3r4r4r");
 
 var checkInItemsToInventory = new CheckInItemsToInventory(inventoryItemDetailsDto.id, 1, inventoryItemDetailsDto.version);

@@ -5,6 +5,7 @@ var EventPublisher = require("../../../lib/domain/eventpublisher"),
 var FakeBus  = function() {
     EventPublisher.call(this);
     CommandSender.call(this);
+    this.types = [];
     this.handlers = [];
 };
 
@@ -12,42 +13,34 @@ util.inherits(FakeBus, EventPublisher);
 util.inherits(FakeBus, CommandSender);
 
 FakeBus.prototype.RegisterHandler = function(type, handler) {
-    if(this.handlers[type])
-    {
-        if(this.handlers[type].indexOf(handler) != -1) {
-            throw new Error("Handler is already registered.");
-        }
-        else
-        {
-            this.handlers[type].push(handler);
-        }
-    } else {
-        this.handlers[type] = [];
-        this.handlers[type].push(handler);
+    if(this.types.indexOf(type) == -1) {
+        this.types.push(type);
+        this.handlers.push([]);
+    }
+    if(this.handlers[this.types.indexOf(type)].indexOf(handler) == -1) {
+        this.handlers[this.types.indexOf(type)].push(handler);
     }
 };
 
 FakeBus.prototype.Send = function(command) {
-    if(this.handlers[command.constructor])
-    {
-        for(var i = 0; i < this.handlers[command.constructor].length; i++)
-        {
-            this.handlers[command.constructor][i].Handle(command);
+    if(this.types.indexOf(command.constructor) != -1) {
+        if(this.handlers[this.types.indexOf(command.constructor)].length != 0) {
+            for(var i = 0; i < this.handlers[this.types.indexOf(command.constructor)].length; i++)
+            {
+                this.handlers[this.types.indexOf(command.constructor)][i].Handle(command);
+            }
         }
-    } else {
-        throw new Error("InvalidOperationException no handler registered.");
     }
 };
 
 FakeBus.prototype.Publish = function(event) {
-    if(this.handlers[event.constructor])
-    {
-        for(var i = 0; i < this.handlers[event.constructor].length; i++)
-        {
-            this.handlers[event.constructor][i].Handle(event);
+    if(this.types.indexOf(event.constructor) != -1) {
+        if(this.handlers[this.types.indexOf(event.constructor)].length != 0) {
+            for(var i = 0; i < this.handlers[this.types.indexOf(event.constructor)].length; i++)
+            {
+                this.handlers[this.types.indexOf(event.constructor)][i].Handle(event);
+            }
         }
-    } else {
-        throw new Error("InvalidOperationException no handler registered.");
     }
 };
 

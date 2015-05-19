@@ -100,26 +100,27 @@ app.post("/products/add", function(req, res, next) {
 });
 
 app.post("/products/:id/:action", function(req, res, next) {
+    var inventoryItemDetailsDto = readModelFacade.GetInventoryItemDetails(req.params.id);
+    
     if(req.params.action == "checkin") {
-        var inventoryItemDetailsDto = readModelFacade.GetInventoryItemDetails(req.params.id);
-        
         var checkInItemsToInventory = new CheckInItemsToInventory(inventoryItemDetailsDto.id, 1, inventoryItemDetailsDto.version);
 
         bus.Send(checkInItemsToInventory);
     }
     if(req.params.action == "remove") {
-        var inventoryItemDetailsDto = readModelFacade.GetInventoryItemDetails(req.params.id);
-        
         var removeItemsFromInventory = new RemoveItemsFromInventory(inventoryItemDetailsDto.id, 1, inventoryItemDetailsDto.version);
 
         bus.Send(removeItemsFromInventory);
     }
     if(req.params.action == "deactivate") {
-        var inventoryItemDetailsDto = readModelFacade.GetInventoryItemDetails(req.params.id);
-        
         var deactivateInventoryItem = new DeactivateInventoryItem(inventoryItemDetailsDto.id, inventoryItemDetailsDto.version);
 
         bus.Send(deactivateInventoryItem);
+    }
+    if(req.params.action == "rename") {
+        var renameInventoryItem = new RenameInventoryItem(inventoryItemDetailsDto.id, req.body.name, inventoryItemDetailsDto.version);
+
+        bus.Send(renameInventoryItem);
     }
     res.send({ id : req.params.id, action : req.params.action });
 });

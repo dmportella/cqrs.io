@@ -27,13 +27,14 @@
         <%for(var i = 0; i < items.length;i++) {%>
           <tr>
             <td><%=items[i].id%></td>
-            <td><%=items[i].name%></td>
+            <td><input id="<%=items[i].id%>_nameInput" type="text" value="<%=items[i].name%>"/></td>
             <td><%=items[i].currentCount%></td>
             <td><%=items[i].version%></td>
             <td>
                 <a href="#" onclick="productUpdate(<%=items[i].id%>, 'checkin');"><i class="icon-plus-sign"></i> add</a>
                 <a href="#" onclick="productUpdate(<%=items[i].id%>, 'remove');"><i class="icon-minus-sign"></i> remove</a>
                 <a href="#" onclick="productUpdate(<%=items[i].id%>, 'deactivate');"><i class="icon-plus-sign"></i> deactivate</a>
+                <a href="#" onclick="productUpdate(<%=items[i].id%>, 'rename', { 'name': $('#<%=items[i].id%>_nameInput').val()});"><i class="icon-plus-sign"></i> rename</a>
             </td>
           </tr>
           <%}%>
@@ -46,10 +47,11 @@
 <p>&copy; dmportella 2012</p>
 </footer>
 <script>
-function productUpdate(id, action) {
+function productUpdate(id, action, params) {
 $.ajax({
     url: "/products/" + id + "/" + action,
     type: "POST",
+    data: params,
     dataType: "json",
     cache: false,
     timeout: 5000,

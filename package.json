@@ -14,7 +14,7 @@
     "start": "node ./example/start.js",
     "test": "vows --spec --isolate"
   },
-  "main": "./example/start.js",
+  "main": "example/start.js",
   "repository": {
     "type": "git",
     "url": "https://github.com:dmportella/cqrs.io.git"

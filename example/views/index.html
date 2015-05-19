@@ -6,7 +6,7 @@
 <div class="row">
     <div class="span4">
       <p>Feel free to combine any of the table classes to achieve different looks by utilizing any of the available classes.</p>
-<pre class="prettyprint linenums" style="margin-bottom: 18px;"><ol class="linenums"><li class="L0"><span class="tag">&lt;table</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"table table-striped table-bordered table-condensed"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">  ...</span></li><li class="L2"><span class="tag">&lt;/table&gt;</span></li></ol></pre>
+<pre class="prettyprint linenums" style="margin-bottom: 18px;"><div id="payload"></div></pre>
     </div>
     <div class="span8">
     <h3>Fake Products</h3>
@@ -33,6 +33,7 @@
             <td>
                 <a href="#" onclick="productUpdate(<%=items[i].id%>, 'checkin');"><i class="icon-plus-sign"></i> add</a>
                 <a href="#" onclick="productUpdate(<%=items[i].id%>, 'remove');"><i class="icon-minus-sign"></i> remove</a>
+                <a href="#" onclick="productUpdate(<%=items[i].id%>, 'deactivate');"><i class="icon-plus-sign"></i> deactivate</a>
             </td>
           </tr>
           <%}%>
@@ -59,11 +60,12 @@ $.ajax({
 
     success: function(data) {
       console.log(data);
+      $("#payload").html(JSON.stringify(data));
       console.log('process sucess');
    },
 
-    error: function() {
-      console.log('process error');
+    error: function(err) {
+      console.log('process error' + err);
     },
   });
 }

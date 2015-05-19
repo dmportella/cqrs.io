@@ -8,9 +8,9 @@ At the moment this is it infancy with just the skeleton of the framework in plac
 
     * Snapshots.
     * Redis for publishing events.
-    * Adding support for multiple event and snapshot stores.
+    * Adding support for multiple events and snapshot stores.
     * Expand the denormalisers and their stores.
-    * Create a real-world example archtecture for proof of concept. (most important)
+    * Create a real-world example architecture for proof of concept.
     
 In general there is not a lot to do.
 

@@ -1,6 +1,6 @@
 {
   "name": "cqrs.io",
-  "preferGlobal": "false",
+  "preferGlobal": false,
   "version": "0.0.1",
   "author": "dmportella <dan.portella@cohaesus.co.uk>",
   "description": "A simple cqrs implementation",
@@ -25,9 +25,15 @@
     "io"
   ],
   "dependencies": {
-    "ejs": "^2.6.1",
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "redis": "^2.8.0"
+    "handlebars": "^4.0.12",
+    "hbs": "^4.0.1",
+    "method-override": "^3.0.0",
+    "morgan": "^1.9.1",
+    "multer": "^1.4.1",
+    "redis": "^2.8.0",
+    "serve-favicon": "^2.5.0"
   },
   "noAnalyze": true,
   "devDependencies": {},

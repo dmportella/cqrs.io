@@ -70,26 +70,29 @@ bus.RegisterHandler(InventoryItemDeactivated, list);
 
 ServiceLocator.registerService("bus", bus);
 
-var port = process.env.PORT || process.env.C9_PORT || 80;
+var port = process.env.PORT || 8080;
 
-var util = require('util'),
-    express = require('express');
+const path = require('path'),
+    express = require('express'),
+    bodyParser = require('body-parser'),
+    methodOverride = require('method-override'),
+    logger = require('morgan'),
+    favicon = require('serve-favicon');
     
-var app = express.createServer();
+var app = express();
 
-app.configure(function() {
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.register('.html', require('ejs'));
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'html');
-    app.use(express.favicon());    
-    app.use(express.static(__dirname + '/public', { maxAge: 604800000 }));
-    app.use(express.staticCache());
-});
+app.set('views', __dirname + '/views');
+app.set('view engine', 'hbs');
+
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride());
+//app.use(favicon(path.join(__dirname, '/public/favicon.ico')))
+app.use(express.static(__dirname + '/public', { maxAge: 604800000 }));
 
 app.get('/', function(req, res, next) {
-    res.render('index.html', { items : readModelFacade.GetInventoryDetails() });
+    res.render('index', { items : readModelFacade.GetInventoryDetails() });
 });
 
 app.post("/products/add", function(req, res, next) {

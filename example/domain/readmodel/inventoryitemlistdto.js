@@ -1,4 +1,4 @@
-var InventoryItemListDto = function(id, name) {
+var InventoryItemListDto = function (id, name) {
     this.id = id;
     this.name = name;
 };

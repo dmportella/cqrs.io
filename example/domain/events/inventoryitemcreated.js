@@ -1,7 +1,7 @@
 var Event = require("../../../lib/domain/event"),
     util = require("util");
 
-var InventoryItemCreated  = function(id, name) {
+var InventoryItemCreated = function (id, name) {
     Event.call(this);
     this.id = id;
     this.name = name;

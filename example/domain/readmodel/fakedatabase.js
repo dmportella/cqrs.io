@@ -1,5 +1,5 @@
-var FakeDatabase = function() {
-    if ( arguments.callee.instance ) {
+var FakeDatabase = function () {
+    if (arguments.callee.instance) {
         return arguments.callee.instance;
     }
     arguments.callee.instance = this;
@@ -7,7 +7,7 @@ var FakeDatabase = function() {
     this.list = [];
 };
 
-FakeDatabase.getInstance = function() {
+FakeDatabase.getInstance = function () {
     var fakeDatabase = new FakeDatabase();
     return fakeDatabase;
 };

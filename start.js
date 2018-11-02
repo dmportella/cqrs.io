@@ -1,1 +1,1 @@
-console.log( process.env.PORT || process.env.C9_PORT || 80);
+console.log(process.env.PORT || 8080);

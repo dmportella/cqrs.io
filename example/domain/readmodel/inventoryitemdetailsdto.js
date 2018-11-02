@@ -1,4 +1,4 @@
-var InventoryItemDetailsDto = function(id, name, currentCount, version) {
+var InventoryItemDetailsDto = function (id, name, currentCount, version) {
     this.id = id;
     this.name = name;
     this.currentCount = currentCount;

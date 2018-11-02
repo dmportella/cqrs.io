@@ -1,10 +1,10 @@
 var Command = require("../../../lib/domain/command"),
     util = require("util");
 
-var DeactivateInventoryItem  = function(id, originalVersion) {
+var DeactivateInventoryItem = function (id, originalVersion) {
     Command.call(this);
     this.id = id;
-    this.originalVersion = originalVersion;    
+    this.originalVersion = originalVersion;
 };
 
 util.inherits(DeactivateInventoryItem, Command);

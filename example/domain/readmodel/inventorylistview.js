@@ -12,30 +12,29 @@ var InventoryItemDetailsDto = require("./inventoryitemdetailsdto"),
 var Handler = require("../../../lib/domain/handler"),
     util = require("util"),
     FakeDatabase = require("./fakedatabase");
-    
-var InventoryListView = function() {
+
+var InventoryListView = function () {
     Handler.call(this);
 };
 
 util.inherits(InventoryListView, Handler);
 
-InventoryListView.prototype.Handle = function(message) {
-    if(message instanceof InventoryItemCreated)
-    {
+InventoryListView.prototype.Handle = function (message) {
+    if (message instanceof InventoryItemCreated) {
         var fakeDatabase = FakeDatabase.getInstance();
         fakeDatabase.list.push(new InventoryItemListDto(message.id, message.name));
     } else if (message instanceof InventoryItemDeactivated) {
         var fakeDatabase = FakeDatabase.getInstance();
-        for(inventoryItemListDto in fakeDatabase.list) {
-            if(fakeDatabase.list[inventoryItemListDto].id == message.id) {                
+        for (inventoryItemListDto in fakeDatabase.list) {
+            if (fakeDatabase.list[inventoryItemListDto].id == message.id) {
                 fakeDatabase.list.splice(inventoryItemListDto, 1);
                 break;
             }
         }
     } else if (message instanceof InventoryItemRenamed) {
         var fakeDatabase = FakeDatabase.getInstance();
-        for(inventoryItemListDto in fakeDatabase.list) {
-            if(fakeDatabase.list[inventoryItemListDto].id == message.id) {
+        for (inventoryItemListDto in fakeDatabase.list) {
+            if (fakeDatabase.list[inventoryItemListDto].id == message.id) {
                 fakeDatabase.list[inventoryItemListDto].name = message.newName;
                 break;
             }

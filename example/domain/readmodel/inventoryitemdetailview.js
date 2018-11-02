@@ -4,7 +4,7 @@ var InventoryItemCreated = require("../events/inventoryitemcreated"),
     InventoryItemRenamed = require("../events/inventoryitemrenamed"),
     ItemsCheckedInToInventory = require("../events/itemscheckedintoinventory"),
     ItemsRemovedFromInventory = require("../events/itemsremovedfrominventory");
-    
+
 // DTOS
 var InventoryItemDetailsDto = require("./inventoryitemdetailsdto"),
     InventoryItemListDto = require("./inventoryitemlistdto");
@@ -12,22 +12,21 @@ var InventoryItemDetailsDto = require("./inventoryitemdetailsdto"),
 var Handler = require("../../../lib/domain/handler"),
     util = require("util"),
     FakeDatabase = require("./fakedatabase");
-    
-var InventoryItemDetailView = function() {
+
+var InventoryItemDetailView = function () {
     Handler.call(this);
 };
 
 util.inherits(InventoryItemDetailView, Handler);
 
-InventoryItemDetailView.prototype.Handle = function(message) {
-    if(message instanceof InventoryItemCreated)
-    {
+InventoryItemDetailView.prototype.Handle = function (message) {
+    if (message instanceof InventoryItemCreated) {
         var fakeDatabase = FakeDatabase.getInstance();
-        fakeDatabase.details.push(new InventoryItemDetailsDto(message.id, message.name, 0,0));
+        fakeDatabase.details.push(new InventoryItemDetailsDto(message.id, message.name, 0, 0));
     } else if (message instanceof InventoryItemDeactivated) {
         var fakeDatabase = FakeDatabase.getInstance();
         for (var i = 0; i < fakeDatabase.details.length; i++) {
-            if(fakeDatabase.details[i].id == message.id) {
+            if (fakeDatabase.details[i].id == message.id) {
                 fakeDatabase.details.splice(i, 1);
                 break;
             }
@@ -47,12 +46,12 @@ InventoryItemDetailView.prototype.Handle = function(message) {
     }
 };
 
-InventoryItemDetailView.prototype.GetDetailsItem = function(id) {
+InventoryItemDetailView.prototype.GetDetailsItem = function (id) {
     var fakeDatabase = FakeDatabase.getInstance();
     for (var i = 0; i < fakeDatabase.details.length; i++) {
-            if(fakeDatabase.details[i].id == id) {
-                return fakeDatabase.details[i];
-            }
+        if (fakeDatabase.details[i].id == id) {
+            return fakeDatabase.details[i];
+        }
     }
     throw new Error("InventoryItemDetails not found.");
 };
